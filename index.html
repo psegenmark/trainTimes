@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>List that makeBelief train</title>
+  <!-- Bootswatch Styling for Improving the Aesthetics -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
+
+  <!-- Font Awesome CSS Icons (For cool glyphicons) -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- Style to fix the issue of text extending past panel length -->
+  <style>
+    .panel-body a {
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="container">
+
+
+    <div class="jumbotron" style="background-color: rgb(27, 30, 36) ; color: white;">
+      <h1 class="text-center"><strong><i class="fa fa-newspaper-o"></i> Train Times</strong></h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <br>
+
+  
+        <div class="panel panel-primary">
+
+      
+          <div class="panel-heading">
+            <h3 class="panel-title"><strong><i class="trainScheduleTable"></i> Current Train Schedule</strong></h3>
+          </div>
+
+          <!-- This main panel will hold each of the resulting articles -->
+          <div class="panel-body" id="listOfTrainTimes">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+          <br>
+          <!-- First panel is for handling the search parameters -->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title"><strong><i class="addAtrain"></i>   Add A Train</strong></h3>
+            </div>
+            <div class="panel-body">
+  
+              <form role="form">
+  
+                <div class="form-group">
+                  <label for="search">Train Name</label>
+                  <input type="text" class="form-control" id="addTrainName">
+                </div>
+  
+             
+                <div class="form-group">
+                  <label for="pwd">Destination</label>
+                  <input type="text" class="form-control" id="addTrainDestination">
+              
+                </div>
+  
+         
+                <div class="form-group">
+                  <label for="start-year">First Train Time (HH:MM)</label>
+                  <input type="text" class="form-control" id="addTrainFirstTrainTime">
+                </div>
+  
+              
+                <div class="form-group">
+                  <label for="end-year">Frequency (min)</label>
+                  <input type="text" class="form-control" id="addTrainFrequency">
+                </div>
+  
+                <!-- Here we have our final submit button -->
+                <button type="submit" class="btn btn-default" id="addTrain"><i class="fa fa-search"></i> Submit</button>
+  
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Footer Region -->
+    <div class="row">
+      <div class="col-sm-12">
+
+        <!-- Line Break followed by closing -->
+        <hr>
+        <h5 class="text-center"><small>Made by P</h5>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- jQuery JS -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
+  
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAnAP9acxLNrRmU966m0hiDJtHO0rdCf3w",
+      authDomain: "project-p-6edcd.firebaseapp.com",
+      databaseURL: "https://project-p-6edcd.firebaseio.com",
+      projectId: "project-p-6edcd",
+      storageBucket: "project-p-6edcd.appspot.com",
+      messagingSenderId: "430948400767"
+    };
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
+
+    // Initial Variables (SET the first set IN FIREBASE FIRST)
+    // Note remember to create these same variables in Firebase!
+    var trainName = "";
+    var trainDestination = "";
+    var trainTime1 = 0;
+    var trainTime2 = 0;
+    
+    // Click Button changes what is stored in firebase
+    $("#addTrain").on("click", function() {
+      // Prevent the page from refreshing
+      event.preventDefault();
+
+      // Get inputs
+      trainName = $("#addTrainName").val();
+      trainDestination = $("#addTrainDestination").val();
+      trainTime1 = $("#addTrainFirstTrainTime").val();
+      trainTime2 = $("#addTrainFrequency").val();
+
+      // Change what is saved in firebase
+      database.ref().set({
+        trainName: trainName,
+        trainDestination: trainDestination,
+        trainTime1: trainTime1,
+        trainTime2: trainTime2,
+      });
+    });
+
+    // Firebase is always watching for changes to the data.
+    // When changes occurs it will print them to console and html
+    database.ref().on("value", function(snapshot) {
+
+      // Print the initial data to the console.
+      console.log(snapshot.val());
+
+      // Log the value of the various properties
+      console.log(snapshot.val().trainName);
+      console.log(snapshot.val().trainDestination);
+      console.log(snapshot.val().trainTime1);
+      console.log(snapshot.val().trainTime2);
+
+
+      // Change the HTML
+      $("#listOfTrainTimes").text(snapshot.val().trainName + " | " + snapshot.val().trainDestination + " | " + snapshot.val().trainTime1 + " | " + snapshot.val().trainTime2);
+
+      // If any errors are experienced, log them to console.
+    }, function(errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });
+
+  </script>
+
+</body>
+
+</html>
