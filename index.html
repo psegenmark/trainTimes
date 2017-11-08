@@ -244,10 +244,16 @@
 
     console.log(nextTrainTrue);
 
+    var nextTrainHHMM = moment().startOf('day')
+                                .seconds(trainF)
+                                .format('HH:mm:ss');
+
+    console.log(nextTrainHHMM);
+
     td1.append(snapshot.val().trainName);
       td2.append(snapshot.val().trainDestination);
       td3.append(snapshot.val().trainTime2);
-      td4.append(trainF);
+      td4.append(nextTrainHHMM);
       td5.append(nextTrainTrue);
       trs.append(td1, td2, td3, td4, td5);
 
